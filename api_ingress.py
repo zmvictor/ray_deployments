@@ -51,8 +51,8 @@ class APIIngress:
         "/list",
         status_code=status.HTTP_200_OK,
     )
-    async def list_models(self, response: Response):
-        return self.image_handles.keys()
+    async def list_models(self):
+        return ",".join(list(self.image_handles.keys()))
 
 
 image_handles = {name: handler.bind() for name, handler in image_model_handles.items()}

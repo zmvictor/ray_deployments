@@ -12,7 +12,7 @@ spec:
   serveConfig:
     importPath: api_ingress.entrypoint
     runtimeEnv: |
-      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.1.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate"]}
+      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.2.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate"]}
     deployments:
       - name: StableDiffusionV2
         autoscalingConfig: |
