@@ -10,9 +10,9 @@ spec:
   serviceUnhealthySecondThreshold: 1200 # Config for the health check threshold for service. Default value is 60.
   deploymentUnhealthySecondThreshold: 1200 # Config for the health check threshold for deployments. Default value is 60.
   serveConfig:
-    importPath: sd.entrypoint
+    importPath: api_ingress.entrypoint
     runtimeEnv: |
-      {"working_dir": "https://github.com/zmvictor/test_dag/archive/refs/tags/2.3.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate"]}
+      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.1.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate"]}
     deployments:
       - name: StableDiffusionV2
         autoscalingConfig: |
@@ -21,7 +21,7 @@ spec:
           numCpus: 4
           numGpus: 1
       - name: APIIngress
-         autoscalingConfig: |
+        autoscalingConfig: |
           {"minReplicas": 2, "maxReplicas": 4}
         rayActorOptions:
           numCpus: 4

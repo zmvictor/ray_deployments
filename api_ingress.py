@@ -39,7 +39,7 @@ class APIIngress:
         return Response(content=file_stream.getvalue(), media_type="image/png")
     
     @app.get(
-        "/healthcheck",
+        "/",
         status_code=status.HTTP_200_OK,
     )
     async def hc(self, response: Response):
