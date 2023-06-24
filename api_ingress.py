@@ -43,9 +43,10 @@ class APIIngress:
         status_code=status.HTTP_200_OK,
     )
     async def hc(self, response: Response):
-        is_ready = await self.handle.is_healthy.remote()
-        if not is_ready:
-            response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        for name, handle in self.image_handles.items():
+            is_ready = await handle.is_healthy.remote()
+            if not is_ready:
+                response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
 
     @app.get(
         "/list",
