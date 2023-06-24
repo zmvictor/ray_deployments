@@ -1,0 +1,5 @@
+ray==2.5.0
+requests==2.3.0
+torch==2.0.1
+diffusers==0.17.1
+transformers==4.28.0
