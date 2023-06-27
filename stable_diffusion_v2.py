@@ -26,16 +26,26 @@ class StableDiffusionV2(BaseModel):
         
         self.is_ready = True
 
+    @classmethod
+    def model_params(self) -> dict:
+        return {
+            "prompt": "",
+            "height": 512,
+            "width": 512,
+            "num_inference_steps": 50,
+            "guidance_scale": 0.75,
+        }
+
     def is_healthy(self) -> bool:
         return self.is_ready
     
     def eval(self, *args, **kwargs):
-        prompt = kwargs.get("prompt", "")
-        img_size = int(kwargs.get("img_size", 512))
-        return self._eval(prompt=prompt, img_size=img_size)
-
-    def _eval(self, prompt: str, img_size: int):
-        assert len(prompt), "prompt parameter cannot be empty"
-
-        image = self.pipe(prompt, height=img_size, width=img_size).images[0]
+        model_params = self.model_params()
+        model_params.update({k:v for k,v in kwargs.items() if k in model_params})
+        image = self.pipe(**model_params).images[0]
         return image
+
+    # def _eval(self, **kwargs):
+
+    #     image = self.pipe(prompt, height=img_size, width=img_size).images[0]
+    #     return image

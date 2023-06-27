@@ -4,6 +4,7 @@ from typing import Dict
 from io import BytesIO
 from fastapi import FastAPI, status
 from fastapi.responses import Response
+from fastapi.encoders import jsonable_encoder
 from starlette.requests import Request
 
 from ray import serve
@@ -16,6 +17,9 @@ app = FastAPI()
 class APIIngress:
     def __init__(self, image_handles: Dict[str, serve.Application]) -> None:
         self.image_handles = image_handles
+        self.model_info = {
+            name: deployment.func_or_class.model_params() for name, deployment in image_model_handles.items()
+        }
 
 
     @app.post(
@@ -53,7 +57,8 @@ class APIIngress:
         status_code=status.HTTP_200_OK,
     )
     async def list_models(self):
-        return ",".join(list(self.image_handles.keys()))
+        model_infos = [{"model": name, "parameters": info} for name, info in self.model_info.items()]
+        return model_infos
 
 
 image_handles = {name: handler.bind() for name, handler in image_model_handles.items()}

@@ -8,6 +8,11 @@ class BaseModel(ABC):
         self.model = None
 
     @abstractmethod
+    def model_params(self) -> dict:
+        # Return a dictionary of model parameters
+        pass
+
+    @abstractmethod
     def is_healthy(self) -> bool:
         # The serving system will call this before routing requests to the model instance
         pass
