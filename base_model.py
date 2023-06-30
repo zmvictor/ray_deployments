@@ -5,7 +5,7 @@ BaseModel is an abstract class that defines the interface for all models.
 """
 class BaseModel(ABC):
     def __init__(self):
-        self.model = None
+        pass
 
     @abstractmethod
     def model_params(self) -> dict:

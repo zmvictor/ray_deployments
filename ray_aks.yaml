@@ -12,11 +12,17 @@ spec:
   serveConfig:
     importPath: api_ingress.entrypoint
     runtimeEnv: |
-      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.4.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate"]}
+      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.5.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate"]}
     deployments:
       - name: StableDiffusionV2
         autoscalingConfig: |
-          {"minReplicas": 1, "maxReplicas": 3}
+          {"minReplicas": 1, "maxReplicas": 2}
+        rayActorOptions:
+          numCpus: 4
+          numGpus: 1
+      - name: Baichuan7B
+        autoscalingConfig: |
+          {"minReplicas": 1, "maxReplicas": 2}
         rayActorOptions:
           numCpus: 4
           numGpus: 1

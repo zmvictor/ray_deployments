@@ -44,8 +44,3 @@ class StableDiffusionV2(BaseModel):
         model_params.update({k:v for k,v in kwargs.items() if k in model_params})
         image = self.pipe(**model_params).images[0]
         return image
-
-    # def _eval(self, **kwargs):
-
-    #     image = self.pipe(prompt, height=img_size, width=img_size).images[0]
-    #     return image
