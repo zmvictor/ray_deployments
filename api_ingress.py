@@ -65,9 +65,9 @@ class APIIngress:
                 content="Invalid model name"
             )
         handle = self.llm_handles[model_name]
-        outputs_ref = await handle.eval.remote(**data)
-        outputs = await outputs_ref
-        return Response(content=outputs)
+        output_ref = await handle.eval.remote(**data)
+        output = await output_ref
+        return Response(content=output)
     
     @app.get(
         "/",

@@ -3,16 +3,6 @@ import click
 import logging
 import json
 
-# prompt = "a big tiger is dancing on the tree with a lot of bats"
-# r = f"http://127.0.0.1:8000/llm"
-# r = f"http://127.0.0.1:8000/imagine"
-# r = f"http://demo.inferinite.ai/imagine"
-# resp = requests.post(r, json={'model': 'StableDiffusionV2', 'prompt': prompt, 'height': 512, 'width': 512, 'num_inference_steps': 100})
-# resp = requests.post(r, json={'model': 'Baichuan7B', 'prompt': "登鹳雀楼->王之涣"})
-# print(resp.status_code, resp.content.decode('utf-8'))
-# with open("output.png", 'wb') as f:
-#     f.write(resp.content)
-
 logger = logging.getLogger(__name__)
 
 image_models = {
@@ -32,16 +22,23 @@ llms = {
         "temperature": 0.5,
         "max_new_tokens": 100,
     },
-}
 
-def print_pretty_content(content: bytes):
-    json_object = json.loads(content.decode('utf-8'))
-    print(json.dumps(json_object, indent=4))
+    "Longchat13b16k": {
+        "model": "Longchat13b16k",
+        "prompts": ["Hello, my name is", "The capital of France is"],
+        "temperature": 0.5,
+        "max_tokens": 50,
+        "presence_penalty": 0.0,
+        "frequency_penalty": 0.0,
+        "top_p": 0.9,
+        "top_k": -1,
+    },
+}
 
 
 @click.command()
 @click.option("--list-models", is_flag=True, help="List supported models and corresponding parameters")
-@click.option("--endpoint", default="http://localhost:8000", help="ray endpoint")
+@click.option("--endpoint", default="http://localhost:8000", help="service endpoint")
 @click.option("--model", help="Model name: must be contained in --list-models")
 def client(list_models, endpoint, model):
     if list_models:
@@ -60,5 +57,3 @@ def client(list_models, endpoint, model):
 
 if __name__ == "__main__":
     client()
-        
-        
