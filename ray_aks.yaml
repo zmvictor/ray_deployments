@@ -5,14 +5,14 @@
 apiVersion: ray.io/v1alpha1
 kind: RayService
 metadata:
-  name: sd-sample
+  name: ray-sample
 spec:
-  serviceUnhealthySecondThreshold: 1200 # Config for the health check threshold for service. Default value is 60.
-  deploymentUnhealthySecondThreshold: 1200 # Config for the health check threshold for deployments. Default value is 60.
+  serviceUnhealthySecondThreshold: 2400 # Config for the health check threshold for service. Default value is 60.
+  deploymentUnhealthySecondThreshold: 2400 # Config for the health check threshold for deployments. Default value is 60.
   serveConfig:
     importPath: api_ingress.entrypoint
     runtimeEnv: |
-      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.6.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate", "sentencepiece"]}
+      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.7.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate", "sentencepiece", "vllm"]}
     deployments:
       - name: StableDiffusionV2
         autoscalingConfig: |
@@ -21,6 +21,12 @@ spec:
           numCpus: 4
           numGpus: 1
       - name: Baichuan7B
+        autoscalingConfig: |
+          {"minReplicas": 1, "maxReplicas": 2}
+        rayActorOptions:
+          numCpus: 4
+          numGpus: 1
+      - name: Longchat13b16k
         autoscalingConfig: |
           {"minReplicas": 1, "maxReplicas": 2}
         rayActorOptions:
@@ -75,16 +81,23 @@ spec:
       #pod template
       template:
         spec:
+          tolerations:
+          - key: "sku"
+            operator: "Equal"
+            value: "gpu"
+            effect: "NoSchedule"
           containers:
             - name: ray-head
-              image: dlisllm.azurecr.io/ray:2.5.0-py310-cpu
+              image: dlisllm.azurecr.io/ray:2.5.0-py310-gpu
               resources:
                 limits:
-                  cpu: 6
+                  cpu: 24
                   memory: 24Gi
+                  nvidia.com/gpu: 1
                 requests:
-                  cpu: 4
+                  cpu: 12
                   memory: 12Gi
+                  nvidia.com/gpu: 1
               ports:
                 - containerPort: 6379
                   name: gcs-server
@@ -96,8 +109,8 @@ spec:
                   name: serve
     workerGroupSpecs:
     # the pod replicas in this group typed worker
-    - replicas: 2
-      minReplicas: 2
+    - replicas: 3
+      minReplicas: 3
       maxReplicas: 10
       # logical group name, for this called small-group, also can be functional
       groupName: gpu-worker-group
@@ -125,13 +138,13 @@ spec:
                     command: ["/bin/sh","-c","ray stop"]
               resources:
                 limits:
-                  cpu: "15"
+                  cpu: "32"
                   memory: "240Gi"
-                  nvidia.com/gpu: 4
+                  nvidia.com/gpu: 2
                 requests:
-                  cpu: "15"
+                  cpu: "32"
                   memory: "240Gi"
-                  nvidia.com/gpu: 4
+                  nvidia.com/gpu: 2
     headServiceAnnotations: {}
       # annotations passed on for the Head Service
       # service_key: "service_value"

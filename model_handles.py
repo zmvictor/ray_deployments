@@ -25,6 +25,6 @@ large_language_model_handles["Baichuan7B"] = serve.deployment(
 ) (Baichuan7B)
 
 large_language_model_handles["Longchat13b16k"] = serve.deployment(
-    ray_actor_options={"num_gpus": 1},
+    ray_actor_options={"num_gpus": 1, "runtime_env": {"pip": ["vllm"]}},
     autoscaling_config={"min_replicas": 1, "max_replicas": 2},
 ) (Longchat13b16k)
