@@ -85,7 +85,7 @@ spec:
           - key: "sku"
             operator: "Equal"
             value: "gpu"
-            effect: "NoSchedule"
+            effect: "NoSchedule"`
           containers:
             - name: ray-head
               image: dlisllm.azurecr.io/ray:2.5.0-py310-gpu
