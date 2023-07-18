@@ -12,7 +12,7 @@ spec:
   serveConfig:
     importPath: api_ingress.entrypoint
     runtimeEnv: |
-      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.7.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate", "sentencepiece", "vllm"]}
+      {"working_dir": "https://github.com/zmvictor/ray_deployments/archive/refs/tags/0.7.zip", "pip": ["ray[serve]", "requests", "torch", "diffusers", "transformers", "accelerate", "sentencepiece", "vllm", "transformers_stream_generator", "colorama", "cpm_kernels", "streamlit"]}
     deployments:
       - name: StableDiffusionV2
         autoscalingConfig: |
@@ -20,7 +20,7 @@ spec:
         rayActorOptions:
           numCpus: 4
           numGpus: 1
-      - name: Baichuan7B
+      - name: Baichuan13B
         autoscalingConfig: |
           {"minReplicas": 1, "maxReplicas": 2}
         rayActorOptions:
@@ -85,19 +85,20 @@ spec:
           - key: "sku"
             operator: "Equal"
             value: "gpu"
-            effect: "NoSchedule"`
+            effect: "NoSchedule"
           containers:
             - name: ray-head
               image: dlisllm.azurecr.io/ray:2.5.0-py310-gpu
               resources:
                 limits:
-                  cpu: 24
-                  memory: 24Gi
-                  nvidia.com/gpu: 1
+                limits:
+                  cpu: "32"
+                  memory: "240Gi"
+                  nvidia.com/gpu: 2
                 requests:
-                  cpu: 12
-                  memory: 12Gi
-                  nvidia.com/gpu: 1
+                  cpu: "32"
+                  memory: "240Gi"
+                  nvidia.com/gpu: 2
               ports:
                 - containerPort: 6379
                   name: gcs-server

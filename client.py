@@ -23,6 +23,11 @@ llms = {
         "max_new_tokens": 100,
     },
 
+    "Baichuan13B": {
+        "model": "Baichuan13B",
+        "messages": [{"role": "user", "content": "What's the highest mountain in the world?"}]
+    },
+
     "Longchat13b16k": {
         "model": "Longchat13b16k",
         "prompts": ["Hello, my name is", "The capital of France is"],
